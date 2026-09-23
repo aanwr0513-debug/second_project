@@ -12,11 +12,9 @@ class LoginWindow:
         self.root.config(bg="#2c3e50")
         self.root.resizable(False, False)
 
-        # متغيرات الدخول
         self.username_var = StringVar()
         self.password_var = StringVar()
 
-        # إطار تسجيل الدخول
         frame = Frame(self.root, bg="white", bd=2, relief="groove")
         frame.place(relx=0.5, rely=0.5, anchor=CENTER, width=340, height=240)
 
@@ -54,7 +52,6 @@ def open_main_app(user_role):
     app.geometry("1150x720")
     app.config(bg="#f8f9fa")
 
-    # المتغيرات
     barcode_var = StringVar()
     name_var = StringVar()
     price_var = StringVar()
@@ -62,7 +59,6 @@ def open_main_app(user_role):
     search_var = StringVar()
     pos_barcode_var = StringVar()
 
-    # --- دوال العمليات ---
     def load_data(data=None):
         for row in tree.get_children():
             tree.delete(row)
@@ -76,7 +72,7 @@ def open_main_app(user_role):
             tag = 'low_stock' if qty <= 3 else ''
             tree.insert("", END, values=row, tags=(tag,))
         
-        lbl_total.config(text=f"إجمالي قيمة المخزون: {total_inventory_value:.2f} د.ل")
+        lbl_total.config(text=f"Total Value: {total_inventory_value:.2f} LYD")
 
     def clear_entries():
         barcode_var.set("")
@@ -189,7 +185,6 @@ def open_main_app(user_role):
                 new_qty = p_qty - 1
                 database.update_product(p_id, product[1], p_name, p_price, new_qty)
                 
-                # توليد رقم فاتورة عشوائي وتسجيل عملية البيع
                 invoice_no = f"INV-{random.randint(10000, 99999)}"
                 database.record_sale(invoice_no, p_name, p_price, 1)
                 
@@ -210,7 +205,6 @@ def open_main_app(user_role):
 
         Label(report_win, text="📊 سجل مبيعات وفواتير المحل", font=("Tahoma", 13, "bold"), bg="#f8f9fa", fg="#2c3e50").pack(pady=10)
 
-        # جدول التقارير
         rep_frame = Frame(report_win, bg="white")
         rep_frame.pack(fill="both", expand=True, padx=15, pady=10)
 
@@ -244,7 +238,7 @@ def open_main_app(user_role):
             total_sales_revenue += s[5]
             rep_tree.insert("", END, values=s)
 
-        Label(report_win, text=f"إجمالي إيرادات المبيعات المسجلة: {total_sales_revenue:.2f} د.ل", font=("Tahoma", 11, "bold"), bg="#f8f9fa", fg="#27ae60").pack(pady=10)
+        Label(report_win, text=f"Total Sales Revenue: {total_sales_revenue:.2f} LYD", font=("Tahoma", 11, "bold"), bg="#f8f9fa", fg="#27ae60").pack(pady=10)
 
     def show_item_card():
         selected_item = tree.focus()
@@ -267,20 +261,18 @@ def open_main_app(user_role):
         Label(info_frame, text=f"اسم الصنف: {values[2]}", font=("Tahoma", 11, "bold"), bg="white", anchor="w").pack(fill="x", pady=3)
         Label(info_frame, text=f"السعر: {values[3]} د.ل", font=("Tahoma", 10), bg="white", fg="#27ae60", anchor="w").pack(fill="x", pady=3)
         Label(info_frame, text=f"الكمية المتاحة: {values[4]} قطعة", font=("Tahoma", 10), bg="white", fg="#e67e22", anchor="w").pack(fill="x", pady=3)
-        Label(card_window, text=f"الباركود: | | ||| | | | *{values[1]}*", font=("Consolas", 14, "bold"), bg="white", fg="#333").pack(pady=15)
+        Label(card_window, text=f"Barcode: *{values[1]}*", font=("Consolas", 14, "bold"), bg="white", fg="#333").pack(pady=15)
         
         Button(card_window, text="طباعة البطاقة", font=("Tahoma", 10, "bold"), bg="#007bff", fg="white", bd=0, padx=15, pady=5, command=lambda: messagebox.showinfo("طباعة", "تم إرسال بطاقة السلعة إلى طابعة الباركود بنجاح!")).pack(pady=10)
 
-    # --- واجهة المستخدم (GUI) الرئيسية ---
     header_frame = Frame(app, bg="#2c3e50", height=65)
     header_frame.pack(fill="x")
     Label(header_frame, text="🛒 منظومة إدارة المحلات ونقطة البيع الحديثة", font=("Tahoma", 15, "bold"), bg="#2c3e50", fg="white").pack(side=LEFT, padx=20)
-    Label(header_frame, text=f"المستخدم: ( {user_role} ) | تصميم: الزول", font=("Tahoma", 10, "bold"), bg="#2c3e50", fg="#f39c12").pack(side=RIGHT, padx=20)
+    Label(header_frame, text=f"User: ({user_role}) | Dev: Alzool", font=("Tahoma", 10, "bold"), bg="#2c3e50", fg="#f39c12").pack(side=RIGHT, padx=20)
 
     main_container = Frame(app, bg="#f8f9fa")
     main_container.pack(fill="both", expand=True, padx=15, pady=15)
 
-    # إطار الإدخال
     lf_manage = LabelFrame(main_container, text=" بيانات المنتج والباركود ", font=("Tahoma", 11, "bold"), bg="#f8f9fa")
     lf_manage.pack(fill="x", pady=(0, 10))
 
@@ -296,7 +288,6 @@ def open_main_app(user_role):
     Label(lf_manage, text="الكمية:", font=("Tahoma", 10, "bold"), bg="#f8f9fa").grid(row=1, column=1, sticky="e", padx=5, pady=8)
     Entry(lf_manage, textvariable=qty_var, font=("Tahoma", 11), width=22, bd=2, relief="groove").grid(row=1, column=0, padx=5, pady=8)
 
-    # إطار التحكم ونقطة البيع والتقارير
     control_frame = Frame(main_container, bg="#f8f9fa")
     control_frame.pack(fill="x", pady=5)
 
@@ -315,7 +306,6 @@ def open_main_app(user_role):
     search_entry.pack(side=LEFT, padx=5)
     search_entry.bind("<KeyRelease>", search_item)
 
-    # الأزرار الرئيسية
     btns_frame = Frame(main_container, bg="#f8f9fa", pady=10)
     btns_frame.pack(fill="x")
 
@@ -326,7 +316,6 @@ def open_main_app(user_role):
     Button(btns_frame, text="🏷️ بطاقة السلعة", font=("Tahoma", 9, "bold"), bg="#007bff", fg="white", bd=0, padx=8, pady=5, command=show_item_card).pack(side=LEFT, expand=True, padx=2)
     Button(btns_frame, text="🧹 تفريغ الحقول", font=("Tahoma", 9, "bold"), bg="#6c757d", fg="white", bd=0, padx=8, pady=5, command=clear_entries).pack(side=LEFT, expand=True, padx=2)
 
-    # الجدول
     table_frame = Frame(main_container, bg="white", bd=1, relief="solid")
     table_frame.pack(fill="both", expand=True, pady=5)
 
@@ -352,18 +341,16 @@ def open_main_app(user_role):
     tree.bind("<ButtonRelease-1>", get_row_data)
     tree.tag_configure('low_stock', background='#f8d7da')
 
-    # الشريط السفلي
     footer_frame = Frame(app, bg="#343a40", height=45)
     footer_frame.pack(fill="x", side=BOTTOM)
 
-    lbl_total = Label(footer_frame, text="إجمالي قيمة المخزون: 0.00 د.ل", font=("Tahoma", 10, "bold"), bg="#343a40", fg="white")
+    lbl_total = Label(footer_frame, text="Total Value: 0.00 LYD", font=("Tahoma", 10, "bold"), bg="#343a40", fg="white")
     lbl_total.pack(side=RIGHT, padx=20, pady=10)
-    Label(footer_frame, text="تم التطوير بواسطة: الزول", font=("Tahoma", 9, "bold"), bg="#343a40", fg="#f39c12").pack(side=LEFT, padx=20, pady=10)
+    Label(footer_frame, text="Developer: Alzool", font=("Tahoma", 9, "bold"), bg="#343a40", fg="#f39c12").pack(side=LEFT, padx=20, pady=10)
 
     load_data()
     app.mainloop()
 
-# تشغيل برنامج تسجيل الدخول أولاً
 if __name__ == "__main__":
     root = Tk()
     LoginWindow(root)
