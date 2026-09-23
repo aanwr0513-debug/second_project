@@ -1,11 +1,14 @@
-from google import genai
-API_KEY = "ضع_مفتاحك_هنا"
 
+from google import genai
+import os
 from tkinter import *
 from tkinter import ttk, messagebox, filedialog
 import database
 import random
-import os
+
+# قراءة مفتاح الـ API بأمان من إعدادات جهازك (Environment Variable)
+# أو يمكنك وضعه هنا مؤقتاً للتجربة المحلية فقط دون رفعه لـ GitHub
+API_KEY = os.environ.get("GEMINI_API_KEY", "ضع_مفتاحك_هنا")
 
 # --- نافذة تسجيل الدخول ---
 class LoginWindow:
@@ -55,8 +58,8 @@ class MainWindow:
 
 # --- دوال الذكاء الاصطناعي (Gemini AI) ---
 def get_ai_business_advice(sales_data, total_revenue):
-    if API_KEY == "ضع_مفتاحك_هنا":
-        return "⚠️ تنبيه: يرجى إدخال مفتاح Gemini API الصحيح في الكود."
+    if not API_KEY or API_KEY == "ضع_مفتاحك_هنا":
+        return "⚠️ تنبيه: يرجى إعداد متغير البيئة GEMINI_API_KEY أو وضع المفتاح محلياً."
     
     try:
         client = genai.Client(api_key=API_KEY)
@@ -97,7 +100,8 @@ def open_ai_advisor(sales_data, total_sales_revenue, report_win):
     ai_scroll.pack(side=RIGHT, fill=Y)
 
     ai_text_box = Text(text_frame, font=("Tahoma", 10), wrap=WORD, yscrollcommand=ai_scroll.set, bd=1, relief="solid")
-    ai_scroll.pack(fill="both", expand=True)
+    ai_scroll.config(command=ai_text_box.yview)
+    ai_text_box.pack(fill="both", expand=True)
 
     ai_text_box.insert(END, "⏳ جاري تحليل المبيعات باستخدام الذكاء الاصطناعي...")
     ai_win.update()
