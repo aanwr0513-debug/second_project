@@ -126,7 +126,7 @@ def get_all_sales():
     conn.close()
     return rows
 
-# --- دوال التحقق من المستخدمين ---
+# --- دوال المستخدمين والصلاحيات ---
 def check_user_login(username, password):
     conn = sqlite3.connect("store_system.db")
     cursor = conn.cursor()
@@ -134,6 +134,33 @@ def check_user_login(username, password):
     user = cursor.fetchone()
     conn.close()
     return user[0] if user else None
+
+def get_all_users():
+    conn = sqlite3.connect("store_system.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, role FROM users")
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+def add_user(username, password, role):
+    conn = sqlite3.connect("store_system.db")
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
+
+def delete_user(user_id):
+    conn = sqlite3.connect("store_system.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
 
 # تهيئة قاعدة البيانات والجداول تلقائياً
 connect_db()
